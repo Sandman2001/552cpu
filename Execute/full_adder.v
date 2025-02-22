@@ -7,7 +7,7 @@ module full_adder(
 	// Declare any internal signals as type logic //
 	///////////////////////////////////////////////
 	wire A_xor_B, A_and_B, AB_and_Cin;
-		
+	//new code here	
 	
 	/////////////////////////////////////////////////
 	// Implement Full Adder as structural verilog //
