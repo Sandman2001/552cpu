@@ -7,7 +7,7 @@ logic [1:0] i;
 reg [8:0] j;
 logic P, G;
 
-CLA_4bit iDUT(.A(A), .B(B), .sub(sub), .Cin(Cin), .S(S), .P(P), .G(G));
+CLA_4bit_AddSub iDUT(.A(A), .B(B), .sub(sub), .Cin(Cin), .S(S), .P(P), .G(G));
 initial begin
 for (sub = 0; sub <=1; sub = sub + 1) begin
 	for (i = 0; i < 2'b11; i = i + 1) begin

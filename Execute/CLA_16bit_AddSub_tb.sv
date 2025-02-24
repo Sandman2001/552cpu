@@ -4,7 +4,7 @@ logic sub;
 logic Error;
 logic [9:0] i; //itterator
 
-CLA_16bit iDUT(.A(A), .B(B), .sub(sub), .Sum(Sum), .Error(Error));
+CLA_16bit_AddSub iDUT(.A(A), .B(B), .sub(sub), .Sum(Sum), .Error(Error));
 initial begin
 for (sub = 0; sub <= 1; sub = sub + 1) begin
 	for (i='0; i<=10'h200; i=i+10'h001) begin
