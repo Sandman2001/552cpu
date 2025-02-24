@@ -1,4 +1,4 @@
-module PFA(A, B, sub, Cin, P, G, S);
+module PFA_AddSub(A, B, sub, Cin, P, G, S);
 input A,B, Cin;
 input sub; //choose between add or sub
 output P, G, S; //Prigate and Generate for carry look ahead chain
