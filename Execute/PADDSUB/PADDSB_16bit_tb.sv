@@ -74,7 +74,7 @@ module PADDSB_16_bit_tb();
         // Add verification
         verify_result();
         
-        $finish;
+        $stop;
     end
 
     // Verification task
