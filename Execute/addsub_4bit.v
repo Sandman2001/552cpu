@@ -18,5 +18,5 @@ module addsub_4bit (Sum, Ovfl, A, B, sub);
 	full_adder FA2(.A(A[2]), .B(Bin[2]), .Cin(carry[1]), .sum(Sum[2]), .Cout(carry[2]));
 	full_adder FA3(.A(A[3]), .B(Bin[3]), .Cin(carry[2]), .sum(Sum[3]), .Cout(Cout)); //if carry out on last FA, we know overflow
 	
-	assign Ovfl = sub ? ~Cout : Cout;
+	assign Ovfl = carry[2] ^ Cout; //if carry out of last FA and Cout are different, then overflow
 endmodule
