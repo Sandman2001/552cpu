@@ -35,7 +35,7 @@ for (i = 0; i< 12'hFFF; i = i + 12'h001) begin
 	end
 end
 
-/*
+//some extra edge cases to make sure it works fully
 A = 16'h8888;
 B = 16'h8888;
 #1;
@@ -57,7 +57,7 @@ if (S != 16'h0038) begin
 	$display("incorrect max sub sign");
  	$stop();
 end
-*/
+
 $display("YAHOO ALL TESTS PASSED!!!");
 $stop();
 end

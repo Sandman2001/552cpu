@@ -1,7 +1,6 @@
-module RED_CLA_4bit(A, B, Cin, Ovfl, S);
+module RED_CLA_4bit(A, B, Cin, S);
 input [3:0] A, B;
 input Cin;
-output Ovfl;
 output [4:0] S;
 
 wire P0, G0, P1, G1, C2, P2, G2, C3, P3, G3;
@@ -16,7 +15,6 @@ assign C1 = G0 | (P0 & Cin);
 assign C2 = G1 | (P1 & G0) | (P1 & P0 & Cin);
 assign C3 = G2 | (P2 & G1) | (P2 & P1 & G0) | (P2 & P1 & P0 & Cin);
 //Logic to detect overflow
-assign Ovfl = (A[3] & B[3] & (~S[3])) | ((~A[3]) & (~B[3]) & S[3]);
 //logic to detect carry logic if there is overflow
 assign S[4] = G3 | (P3 & G2) | (P3 & P2 & G1) | (P3 & P2 & P1 & G0) | (P3 & P2 & P1 & P0 & Cin);
 endmodule
