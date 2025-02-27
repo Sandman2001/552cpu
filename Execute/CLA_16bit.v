@@ -1,20 +1,25 @@
 module CLA_16bit(A, B, S);
 input [15:0] A, B;
 output [15:0] S;
-wire PG0, GG0, Cin1, PG1, GG1, Cin2, PG2, GG2, Cin3, PG3, GG3;
-wire [8:0] sumLevel1_1,sumLevel1_2;
-CLA_8bt level1_1(.A(A[7:0]), .B(B[7:0]), .S(sumLevel1_1));
-CLA_8bt level1_1(.A(A[15:8]), .B(B[15:8]), .S(sumLevel1_2));
-//3 4bit CLA blocks to allow for the final addition of the 2 fisrt level of 2 bit sums of the 16bit input
-CLA_4bit Level2_G0(.A(sumLevel1_1[3:0]), .B(sumLevel1_2[3:0]) , .Cin(0) , .S(S[3:0]), .P(PG0), .G(GG0));
+wire [4:0] sum_ae, sum_bf, sum_cg, sum_dh;
+wire [5:0] sum_ae_bf, sum_cg_dh;
+wire [10:0] dontCare;
+//level 1 of the addition tree
+CLA_4bit sum_ae_com(.A(A[15:12]), .B(B[15:12]), .S(sum_ae));
+CLA_4bit sum_bf_comp(.A(A[11:8]), .B(B[11:8]), .S(sum_bf));
+CLA_4bit sum_cg_comp(.A(A[7:4]), .B(B[7:4]), .S(sum_cg));
+CLA_4bit sum_dh_comp(.A(A[3:0]), .B(B[3:0]), .S(sum_dh));
 
-CLA_4bit Level2_G0(.A(sumLevel1_1[7:4]), .B(sumLevel1_2[7:4]) , .Cin(GG0) , .S(S[7:4]), .P(PG1), .G(GG1));
+//level 2 of the reduction tree
+CLA_4bit sum_ae_bf_1(.A(sum_ae[3:0]), .B(sum_bf[3:0]), .S(sum_ae_bf[3:0]));
+CLA_4bit sum_ae_bf_2(.A({4{sum_ae[4]}}), .B({4{sum_bf[4]}}), .S({dontCare[1:0],sum_ae_bf[5:4]}));
+CLA_4bit sum_cg_dh_1(.A(sum_cg[3:0]), .B(sum_dh[3:0]), .S(sum_cg_dh[3:0]));
+CLA_4bit sum_cg_dh_2(.A({4{sum_cg[4]}}), .B({4{sum_dh[4]}}), .S({dontCare[3:2],sum_cg_dh[5:4]}));
 
-CLA_4bit Level2_G0(.A({4{sumLevel1_1[8]}}), .B({4{sumLevel1_2[8]}}) , .Cin(Cin2) , .S(S[11:8]), .P(PG2), .G(GG2));
+//level 3 of the reduction tree
+CLA_4bit sum_ae_bf_cg_dh_1(.A(sum_ae_bf[3:0]), .B(sum_cg_dh[3:0]), .S(S[3:0]));
+CLA_4bit sum_ae_bf_cg_dh_2(.A({{2{sum_ae_bf[5]}},sum_ae_bf[5:4]}), .B({{2{sum_cg_dh[5]}},sum_cg_dh[5:4]}), .S(S[7:0]));
 
-assign Cin2 = GG1 | (PG1 & GG0)
-assign C3 = G2 | (P2 & G1) | (P2 & P1 & G0) | (P2 & P1 & P0 & Cin);
-//sign extending the MSB of sum to make sum 16 bits
-assign S[15:12] = {4{S[11]}};
-
+//signextending the msb of the sum work
+assign S[15:8] = {8{S[7]}};
 endmodule
