@@ -15,15 +15,14 @@ CLA_4bit_AddSub CLA_block2(.A(A[11:8]), .B(B[11:8]), .sub(sub), .Cin(CG2), .P(PG
 CLA_4bit_AddSub CLA_block3(.A(A[15:12]), .B(B[15:12]), .sub(sub), .Cin(CG3), .P(PG3), .G(GG3), .S(Sum_temp[15:12]));
 
 //logic for the carry in for all 4 4-BIT CLA blocks
-assign cG1 = GG0 | (PG0 & sub);
+assign CG1 = GG0 | (PG0 & sub);
 assign CG2 = GG1 | (PG1 & GG0);
 assign CG3 = GG2 | (PG2 & GG1) | (PG2 & PG1 & GG0) ;
 //Logic to detect overflow
-assign Error = (A[15] & B[15] & (~Sum[15])) | ((~A[15]) & (~B[15]) & Sum[15]);
+assign Error = (A[15] & B[15] & (~Sum_temp[15])) | ((~A[15]) & (~B[15]) & Sum_temp[15]);
 //choosing for output of pos saturation
-assign Sum = (A[15] & B[15] & (~Sum[15]))? 16'7FFF : Sum_temp;
-//choosing for output of neg saturation
-assign Sum = ((~A[15]) & (~B[15]) & Sum[15])? 16'8000 : Sum_temp;
+assign Sum = (A[15] & B[15] & (~Sum_temp[15]))? 16'h7FFF :
+	     ((~A[15]) & (~B[15]) & Sum_temp[15])? 16'h8000 : Sum_temp;
 
 endmodule
 

@@ -10,18 +10,27 @@ for (sub = 0; sub <= 1; sub = sub + 1) begin
 	for (i='0; i<=10'h200; i=i+10'h001) begin
 		A = $random;
 		B = $random;
-		#5;
+		#1;
 		//make sure the overflow flag is being detected correctly 
 		if((A[15] == B[15]) && (Sum[15] != A[15]) && Error != 1)begin
 			$display("overflow is not being detected");
 			$stop();
 		end
-		//make sure that even with everflow sum is always bewing computed correctly
-		else if((sub == 0) && (Sum != A+B)) begin
+		//making sure the saturating at correct portions
+		else if ((Error == 1) && (A[15] & B[15] & (~Sum[15])) && (Sum != 16'h7FFF)) begin
+			$display("Incorrect Pos Saturatioin");
+			$stop();
+		end
+		else if ((Error == 1) && (~A[15] & ~B[15] & (Sum[15])) && (Sum != 16'h8000)) begin
+			$display("Incorrect Neg Saturatioin");
+			$stop();
+		end
+		//Tests if saturation doesn't happen so making sure normal cases work
+		else if((Error == 0) && (sub == 0) && (Sum != A+B)) begin
 			$display("Addition incorrect");
 			$stop();
 		end
-		else if((sub == 1) && (Sum != A-B)) begin
+		else if((Error == 0) && (sub == 1) && (Sum != A-B)) begin
 			$display("Subtraction incorrect");
 			$stop();
 		end
