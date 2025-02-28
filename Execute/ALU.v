@@ -1,8 +1,10 @@
-module ALU (ALU_Out, Error, ALU_In1, ALU_In2, Opcode);
+module ALU (Opcode, ALU_In1, ALU_In2, ALU_Out, Ovfl, Neg, Zero);
 	input [3:0] ALU_In1, ALU_In2;
 	input [1:0] Opcode; 
 	output [3:0] ALU_Out;
-	output Error; // Just to show overflow
+	output Ovfl; // Just to show overflow
+    output Neg; // Just to show negative
+    output Zero; // Just to show zero
 
 	wire [3:0] addsub_out;
 	wire flow;
