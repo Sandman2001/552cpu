@@ -1,4 +1,25 @@
-module ALU (Opcode, ALU_In1, ALU_In2, ALU_Out, Ovfl, Neg, Zero);
+/*The list of instructions and their opcodes are summarized in Table 3 below.
+Table 3: Table of opcodes
+Instruction	Opcode
+ADD	0000
+SUB	0001
+XOR	0010
+RED	0011
+SLL	0100
+SRA	0101
+ROR	0110
+PADDSB	0111
+LW	1000
+SW	1001
+LLB	1010
+LHB	1011
+B	1100
+BR	1101
+PCS	1110
+HLT	1111
+*/
+
+module ALU (ALU_Out, Error, ALU_In1, ALU_In2, Opcode);
 	input [3:0] ALU_In1, ALU_In2;
 	input [1:0] Opcode; 
 	output [3:0] ALU_Out;
