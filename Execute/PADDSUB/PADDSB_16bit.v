@@ -10,7 +10,8 @@ module PADDSB_16bit (
     input  [15:0] A,
     input  [15:0] B,
     input sub,
-    output [15:0] Sum
+    output [15:0] Sum,
+    output Ovfl
 );
 
 wire [3:0] A_E, B_F, C_G, D_H;
@@ -59,6 +60,6 @@ assign tempD_H = (!sub && A[3] && B[3]) ? 4'h8 :
 
 
 assign Sum = {tempA_E, tempB_F, tempC_G, tempD_H};
-
+assign Ovfl = Ovfl_AE | Ovfl_BF | Ovfl_CG | Ovfl_DH;
 
 endmodule
