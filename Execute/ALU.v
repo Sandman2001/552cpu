@@ -19,18 +19,19 @@ PCS	1110
 HLT	1111
 */
 
-module ALU (ALU_In1, ALU_In2, Opcode , ALU_Out, Ovfl, Neg, Zero);
-	input [15:0] ALU_In1, ALU_In2;
-	input [3:0] Opcode; 
-	output [15:0] ALU_Out;
-	output Ovfl; // Just to show overflow
+module ALU (ALU_In1, ALU_In2, Opcode , ALU_Out, Ovfl, Neg, Zero, Flag_Write);
+    input [15:0] ALU_In1, ALU_In2;
+    input [3:0] Opcode; 
+    output [15:0] ALU_Out;
+    output Ovfl; // Just to show overflow
     output Neg; // Just to show negative
     output Zero; // Just to show zero
+    output Flag_Write; // Signal that enable to actually wire to flag register
 
-	wire [15:0] addsub_out;
+    wire [15:0] addsub_out;
     wire add;  //0 whan need to add, 1 when need to sub
 
-	wire [15:0] xor_out;  //ouput of XOR operation
+    wire [15:0] xor_out;  //ouput of XOR operation
     wire [15:0] Red_sum;  //output of RED operation
     wire [15:0] Shift_out;  //output of shift operation
 
@@ -48,8 +49,7 @@ module ALU (ALU_In1, ALU_In2, Opcode , ALU_Out, Ovfl, Neg, Zero);
     /*
         16bit addsub unit adds vlas for operations including ADD, (load word & Store word calc mem address)
     */
-    CLA_16bit_AddSub addsub(.A(ALU_In1), .B(ALU_In2), .sub(add), .Ovfl(Ovfl), .Sum(addsub_out));
-    assign Zero = ~(&addsub_out); //if all bits of operation is 0 than 0 flag should be true
+    CLA_16bit_AddSub addsub(.A(ALU_In1), .B(ALU_In2), .sub(add), .Error(Ovfl), .Sum(addsub_out));
     assign Neg = addsub_out[15]; //if MSB is 1 than negative flag should be true bc signed binary
     /*
         16bit XOR
@@ -59,17 +59,17 @@ module ALU (ALU_In1, ALU_In2, Opcode , ALU_Out, Ovfl, Neg, Zero);
     /*
         16bit reduction tree for RED operation
     */
-    RED reduction_add(.A(ALU_In1), .B(ALU_In2), .S(Red_sum)); 
+    RED_CLA_16bit reduction_add(.A(ALU_In1), .B(ALU_In2), .S(Red_sum)); 
 
     /*
         16bit shift unit for SLL, SRA, ROR operations
     */
-    Shifter (.Shift_Out(Shift_out), .Shift_In(ALU_In1), .Shift_Val(ALU_In2[3:0]), .Mode(Opcode[1:0]));
+    Shifter shift(.Shift_Out(Shift_out), .Shift_In(ALU_In1), .Shift_Val(ALU_In2[3:0]), .Mode(Opcode[1:0]));
 
     /*
         16bit PADDSB unit
     */
-    PADDSB_16bit (.A(ALU_In1), .B(ALU_In2), .sub(), .Sum(PADDSB_out), .Ovfl());
+    PADDSB_16bit padd(.A(ALU_In1), .B(ALU_In2), .sub(), .Sum(PADDSB_out), .Ovfl());
 
     /*
         16bit LLB unit
@@ -81,7 +81,7 @@ module ALU (ALU_In1, ALU_In2, Opcode , ALU_Out, Ovfl, Neg, Zero);
     */
     assign LHB_out = ((ALU_In1 & 16'h00FF) | ALU_In2);
 
-    assign ALU_out = (Opcode == 4'b0000) ? addsub_out :  //ADD
+    assign ALU_Out = (Opcode == 4'b0000) ? addsub_out :  //ADD
                      (Opcode == 4'b0001) ? addsub_out :  //SUB
                      (Opcode == 4'b0010) ? xor_out :  //XOR
                      (Opcode == 4'b0011) ? Red_sum :  //RED
@@ -94,5 +94,15 @@ module ALU (ALU_In1, ALU_In2, Opcode , ALU_Out, Ovfl, Neg, Zero);
                      (Opcode == 4'b1010) ? LLB_out :  //LLB
                      (Opcode == 4'b1011) ? LHB_out :  //LHB
                      ALU_In1; //Default so dont care about these outputs 
+    
+    assign Flag_Write = (Opcode == 4'b0000) ? 1 :  //ADD
+                        (Opcode == 4'b0001) ? 1 :  //SUB
+                        (Opcode == 4'b0010) ? 1 :  //XOR
+                        (Opcode == 4'b0100) ? 1 :  //SLL
+                        (Opcode == 4'b0101) ? 1 :  //SRA
+                        (Opcode == 4'b0110) ? 1 :  //ROR
+                        0;  //Default so dont care about these outputs
+                        
+    assign Zero = ~(&ALU_Out); //if output is 0 than zero flag should be true
 endmodule
 
