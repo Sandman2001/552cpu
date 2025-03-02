@@ -2,20 +2,19 @@ module PADDSB_16_bit_tb();
 
     // Declare test signals
     reg [15:0] A, B;
-    reg sub;
     wire [15:0] Sum;
 
     // Instantiate the DUT
-    PADDSB_16bit dut(.A(A), .B(B), .sub(sub), .Sum(Sum));
+    PADDSB_16bit dut(.A(A), .B(B), .Sum(Sum));
 
     // Helper function to calculate expected result
     function [3:0] saturated_add;
         input [3:0] a, b;
-        input sub;
+       
         reg [4:0] temp;
         begin
-            temp = sub ? a - b : a + b;
-            if (sub) begin
+            temp = a + b;
+            if (temp[4]) begin
                 // For subtraction
                 if (temp[4] && (a[3] == 0 && b[3] == 1)) // Positive overflow
                     saturated_add = 4'h7;
@@ -37,10 +36,9 @@ module PADDSB_16_bit_tb();
 
     // Test stimulus
     initial begin
-        $monitor("Time=%0t A=%h B=%h sub=%b Sum=%h", $time, A, B, sub, Sum);
+        $monitor("Time=%0t A=%h B=%h Sum=%h", $time, A, B, Sum);
         
         // Test case 1: Basic addition without saturation
-        sub = 0;
         A = 16'h1234;
         B = 16'h1111;
         #10;
@@ -51,12 +49,11 @@ module PADDSB_16_bit_tb();
         #10;
         
         // Test case 3: Addition with negative saturation
-        A = 16'h8888;
-        B = 16'h8888;
+        A = 16'h8f88;
+        B = 16'h8f88;
         #10;
         
         // Test case 4: Basic subtraction without saturation
-        sub = 1;
         A = 16'h4444;
         B = 16'h1111;
         #10;
@@ -84,24 +81,24 @@ module PADDSB_16_bit_tb();
         integer i;
         begin
             // First nibble (bits 3:0)
-            nibble_result = saturated_add(A[3:0], B[3:0], sub);
+            nibble_result = saturated_add(A[3:0], B[3:0]);
             expected[3:0] = nibble_result;
             
             // Second nibble (bits 7:4)
-            nibble_result = saturated_add(A[7:4], B[7:4], sub);
+            nibble_result = saturated_add(A[7:4], B[7:4]);
             expected[7:4] = nibble_result;
             
             // Third nibble (bits 11:8)
-            nibble_result = saturated_add(A[11:8], B[11:8], sub);
+            nibble_result = saturated_add(A[11:8], B[11:8]);
             expected[11:8] = nibble_result;
             
             // Fourth nibble (bits 15:12)
-            nibble_result = saturated_add(A[15:12], B[15:12], sub);
+            nibble_result = saturated_add(A[15:12], B[15:12]);
             expected[15:12] = nibble_result;
             
             if (Sum !== expected) begin
                 $display("Error at time %0t:", $time);
-                $display("A=%h, B=%h, sub=%b", A, B, sub);
+                $display("A=%h, B=%h", A, B);
                 $display("Expected: %h", expected);
                 $display("Got     : %h", Sum);
             end else begin

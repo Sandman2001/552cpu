@@ -18,10 +18,10 @@ module Shifter (Shift_Out, Shift_In, Shift_Val, Mode);
 	assign sra1 = {Shift_In[15], Shift_In[15:1]};           // Shift right arithmetic  
 	assign ror1 = {Shift_In[0], Shift_In[15:1]};            // Rotate right
 	assign stage1 = Shift_Val[0] ? 
-	                (Mode == 2'b00) ? sll1 :
+	                ((Mode == 2'b00) ? sll1 :
 	                (Mode == 2'b01) ? sra1 :
 	                (Mode == 2'b10) ? ror1 : 
-	                Shift_In : Shift_In;
+	                Shift_In ): Shift_In;    //if shift val, use 4-1 mux to decide which shift to do. there are two shift in results: either mode is 11(invalid) or shift val is not activated
 
 	// Stage 2 - 2 bit shift
 	wire [15:0] sll2, sra2, ror2;
