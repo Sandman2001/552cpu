@@ -19,14 +19,17 @@ PCS	1110
 HLT	1111
 */
 
-module ALU (ALU_In1, ALU_In2, Opcode , ALU_Out, Ovfl, Neg, Zero, Flag_Write);
+
+module ALU (ALU_In1, ALU_In2, Opcode , ALU_Out, Ovfl, Neg, Zero
+            //Flag_Write
+            );
     input [15:0] ALU_In1, ALU_In2;
     input [3:0] Opcode; 
     output [15:0] ALU_Out;
     output Ovfl; // Just to show overflow
     output Neg; // Just to show negative
     output Zero; // Just to show zero
-    output Flag_Write; // Signal that enable to actually wire to flag register
+    // output Flag_Write; // Signal that enable to actually wire to flag register
 
     wire [15:0] addsub_out;
     wire add;  //0 whan need to add, 1 when need to sub
@@ -69,7 +72,7 @@ module ALU (ALU_In1, ALU_In2, Opcode , ALU_Out, Ovfl, Neg, Zero, Flag_Write);
     /*
         16bit PADDSB unit
     */
-    PADDSB_16bit padd(.A(ALU_In1), .B(ALU_In2), .sub(), .Sum(PADDSB_out), .Ovfl());
+    PADDSB_16bit padd(.A(ALU_In1), .B(ALU_In2), .Sum(PADDSB_out));
 
     /*
         16bit LLB unit
@@ -95,13 +98,13 @@ module ALU (ALU_In1, ALU_In2, Opcode , ALU_Out, Ovfl, Neg, Zero, Flag_Write);
                      (Opcode == 4'b1011) ? LHB_out :  //LHB
                      ALU_In1; //Default so dont care about these outputs 
     
-    assign Flag_Write = (Opcode == 4'b0000) ? 1 :  //ADD
-                        (Opcode == 4'b0001) ? 1 :  //SUB
-                        (Opcode == 4'b0010) ? 1 :  //XOR
-                        (Opcode == 4'b0100) ? 1 :  //SLL
-                        (Opcode == 4'b0101) ? 1 :  //SRA
-                        (Opcode == 4'b0110) ? 1 :  //ROR
-                        0;  //Default so dont care about these outputs
+    // assign Flag_Write = (Opcode == 4'b0000) ? 1 :  //ADD
+    //                     (Opcode == 4'b0001) ? 1 :  //SUB
+    //                     (Opcode == 4'b0010) ? 1 :  //XOR
+    //                     (Opcode == 4'b0100) ? 1 :  //SLL
+    //                     (Opcode == 4'b0101) ? 1 :  //SRA
+    //                     (Opcode == 4'b0110) ? 1 :  //ROR
+    //                     0;  //Default so dont care about these outputs
                         
     assign Zero = ~(&ALU_Out); //if output is 0 than zero flag should be true
 endmodule
