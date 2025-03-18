@@ -13,9 +13,8 @@ CLA_4bit CLA_block3(.A(A[15:12]), .B(B[15:12]), .Cin(CG3), .P(PG3), .G(GG3), .S(
 
 //logic for the carry in for all 4 4-BIT CLA blocks
 assign CG2 = GG1 | (PG1 & GG0);
-assign C3 = GG2 | (PG2 & GG1) | (PG2 & PG1 & GG0) ;
+assign CG3 = GG2 | (PG2 & GG1) | (PG2 & PG1 & GG0) ;
 //Logic to detect overflow
 assign Error = (A[15] & B[15] & (~Sum[15])) | ((~A[15]) & (~B[15]) & Sum[15]);
 
 endmodule
-

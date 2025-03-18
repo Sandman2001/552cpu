@@ -7,16 +7,16 @@ module control_unit(
     output [3:0] SrcReg2,          // Second source register address
     output [3:0] DstReg,           // Destination register address
     
-    // Register file control signals
+    // Register file control signals TODO: goes in WB Reg
     output        RegWrite,        // Enable writing to register file
     
-    // ALU control signals
+    // ALU control signals   TODO: Goes to execute reg
     output [3:0]  ALUOp,           // Operation code for ALU
     output        ALUSrc_1,        // 0: Use SrcReg1, 1: Use PC+2 
     output        ALUSrc_2,        // 0: Use SrcReg2, 1: Use immediate
     output [1:0]  ImdChoice,       // Immediate choice for different operations
     
-    // Memory control signals
+    // Memory control signals TODO: Goes to MEM Reg
     output        MemRead,         // Enable reading from data memory
     output        MemWrite,        // Enable writing to data memory
     output        MemToReg,        // 0: Use ALU result, 1: Use memory data
@@ -25,16 +25,16 @@ module control_unit(
     output        BranchEn,        // Branch instruction enable
     output [2:0]  ccc,             // Branch condition code
     
-    // Individual flag control signals
+    // Individual flag control signals  TODO: Goes to EX Reg
     output        en_Z,            // Enable Zero flag update
     output        en_V,            // Enable Overflow flag update
     output        en_N,            // Enable Negative flag update
     output        disable_bypass,
     
-    // Special path control
+    // Special path control   TODO: Goes to WB Reg
     output        PCToReg,         // 0: Use result from MemToReg, 1: Use PC+2
     
-    // HLT
+    // HLT TODO: Goes to WB Reg
     output        HLT,              // Halt signal
 
     output        shft
