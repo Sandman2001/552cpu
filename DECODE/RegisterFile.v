@@ -93,7 +93,6 @@ module RegisterFile(
     input [3:0] SrcReg2,
     input [3:0] DstReg,
     input WriteReg,
-    input disable_bypass,
     input [15:0] DstData,
     inout [15:0] SrcData1,
     inout [15:0] SrcData2
@@ -107,8 +106,8 @@ module RegisterFile(
     
     wire bypass_read1, bypass_read2;
 
-    assign bypass_read1 = WriteReg && (SrcReg1 == DstReg) && !disable_bypass;
-    assign bypass_read2 = WriteReg && (SrcReg2 == DstReg) && !disable_bypass;
+    assign bypass_read1 = WriteReg && (SrcReg1 == DstReg);
+    assign bypass_read2 = WriteReg && (SrcReg2 == DstReg);
 
     assign SrcData1 = bypass_read1 ? DstData : 16'bz;
     assign SrcData2 = bypass_read2 ? DstData : 16'bz;
