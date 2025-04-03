@@ -13,7 +13,7 @@ input in_RegWrite;  		  // wb write enable
 input in_HLT;			      // halt instr
 input[3:0] in_DstReg;		  // reg num for writeback
 
-// Outputs to MEM stage	
+// Outputs to MEM stage
 output[15:0] out_ALU_result;  // ALU input to MEM
 output[15:0] out_SW_data;	  // data for SW in MEM
 output out_MemWrite;	      // mem write op 
@@ -21,9 +21,10 @@ output out_MemRead;			  // mem read
 output out_MemToReg;		  // mem data and alu mux
 output out_RegWrite;		  // writeback enable
 output out_HLT;				  // halt
+output disable_bypass;
 output[3:0] out_DstReg;		  // destination reg 
 
-dff ALU_res_reg[15:0](.q(out_ALU_result),.d(in_ALU_result),.wen(1'b1),.clk(clk),.rst(~rst_n));
+dff ALU_out_reg[15:0](.q(out_ALU_result),.d(in_ALU_result),.wen(1'b1),.clk(clk),.rst(~rst_n));
 dff SW_data_reg[15:0](.q(out_SW_data),.d(in_SW_data),.wen(1'b1),.clk(clk),.rst(~rst_n));
 dff MemWrite_reg(.q(out_MemWrite),.d(in_MemWrite),.wen(1'b1),.clk(clk),.rst(~rst_n));
 dff MemRead_reg(.q(out_MemRead),.d(in_MemRead),.wen(1'b1),.clk(clk),.rst(~rst_n));
