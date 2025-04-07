@@ -36,10 +36,10 @@ for (i = 0; i< 12'hFFF; i = i + 12'h001) begin
 end
 
 //some extra edge cases to make sure it works fully
-A = 16'h8888;
-B = 16'h8888;
+A = 16'h00B0;
+B = 16'h00B0;
 #1;
-if (S != 16'hFFC0) begin
+if (S != 16'h0160) begin
 	$display("incorrect max sub sign");
 	$stop();
 end

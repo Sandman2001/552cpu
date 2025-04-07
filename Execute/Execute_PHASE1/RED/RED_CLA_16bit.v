@@ -45,6 +45,6 @@ RED_CLA_4bit sum_cg_dh2(.A(sum_cg[7:4]), .B(sum_dh[7:4]), .Cin(c_cg_dh), .S(sum_
 RED_CLA_4bit sum_ae_bf_cg_dh1(.A(sum_ae_bf[3:0]), .B(sum_cg_dh[3:0]), .Cin(1'b0), .S( {c_final, sum_ae_bf_cg_dh[3:0]}));
 RED_CLA_4bit sum_ae_bf_cg_dh2(.A(sum_ae_bf[7:4]), .B(sum_cg_dh[7:4]), .Cin(c_final), .S(sum_ae_bf_cg_dh[8:4]));
 
-assign S = {{9{sum_ae_bf_cg_dh[6]}},sum_ae_bf_cg_dh[6:0]};
+assign S = {{9{sum_ae_bf_cg_dh[8]}},sum_ae_bf_cg_dh[6:0]};
 
 endmodule
