@@ -28,10 +28,15 @@
 
 **Hazard Detection Block (Krish)**
 
+# Krish push your shit brah
 
+# Phase 3 responsibilities (inital deadline 4/25 (before mifflin))
 
+**Cache:**
+- interface 
+- cache modules (Andrew)
+- Contention management (Krish (push your shit))
+- FSM (Norbu, collin)
 
-
-  
-  
-  
+**Testing**
+  ALL
