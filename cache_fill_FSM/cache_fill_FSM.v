@@ -7,16 +7,16 @@ module cache_fill_FSM (
     output reg      fsm_busy,
     output reg      write_data_array,
     output reg      write_tag_array,
-    output reg [15:0] memory_address
+    output wire [15:0] memory_address
 );
 
     wire  [3:0] req_state;
-    reg   [3:0] req_nxt_state;
     wire  [3:0] res_state;
+	reg   [3:0] req_nxt_state;
     reg   [3:0] res_nxt_state;
-    wire        req_fsm_busy;
-    wire        res_fsm_busy;
-
+    reg         req_fsm_busy;
+    reg         res_fsm_busy;
+	reg  [15:0] inc;
     //INcrementer for mem addr 
     CLA_16bit mem_add_cntr (.A(miss_address), .B(inc), .Sum(memory_address), .Error());
 
@@ -29,7 +29,8 @@ module cache_fill_FSM (
         .rst_n (rst_n)
     );
     //FF for holding states for tracking the responses from memory
-    dff dff res_state_ff[3:0] (
+	// there was two dffs here
+    dff res_state_ff[3:0] (
         .q   (res_state),
         .d   (res_nxt_state),
         .wen (1'b1),
@@ -45,46 +46,46 @@ module cache_fill_FSM (
     4'h0: begin
         req_nxt_state        = miss_detected ? 4'h1 : 4'h0;
         req_fsm_busy         = miss_detected;
+		// set inc to 0 here instead so it doenst latch?
     end
     4'h1: begin
         req_nxt_state        = 4'h2;
         req_fsm_busy         = 1'b1;
-        inc                  = 16'h0002;
     end
     4'h2: begin
         req_nxt_state        =  4'h3;
         req_fsm_busy         = 1'b1;
-        inc                  = 16'h0004;
+        inc                  = 16'h0002;
     end
     4'h3: begin
         req_nxt_state        = 4'h4;
         req_fsm_busy         = 1'b1;
-        inc                  = 16'h0006;
+        inc                  = 16'h0004;
     end
     4'h4: begin
         req_nxt_state        = 4'h5;
         req_fsm_busy         = 1'b1;
-        inc                  = 16'h0008;
+        inc                  = 16'h0006;
     end
     4'h5: begin
         req_nxt_state        = 4'h6;
         req_fsm_busy         = 1'b1;
-        inc                  = 16'h000A;
+        inc                  = 16'h0008;
     end
     4'h6: begin
         req_nxt_state        = 4'h7;
         req_fsm_busy         = 1'b1;
-        inc                  = 16'h000C;
+        inc                  = 16'h000A;
     end
     4'h7: begin
         req_nxt_state        = 4'h8;
         req_fsm_busy         = 1'b1;
-        inc                  = 16'h000E;
+        inc                  = 16'h000C;
     end
     4'h8: begin
         req_nxt_state        = 4'h0;
         req_fsm_busy         = 1'b1;
-        inc                  = 16'h0010;
+		inc 				 = 16'h000E;
     end
     default: begin
         req_nxt_state        = 4'h0;
