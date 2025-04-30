@@ -300,7 +300,7 @@ module cache_controller (
 
     // Memory Write Enable (Only for D-Cache write-through on hit)
     // Note: FSM handles reads only. Writes happen directly on hit for write-through.
-    assign mem_write_enable = dcache_memWrite & ~dcache_miss;
+    assign mem_write_enable = dcache_memWrite & ~dcache_miss & ~icache_fsm_busy;
 
     // Memory Enable (Enable memory if either FSM is busy OR a D-cache write-through is happening)
     assign mem_enable = icache_fsm_busy | dcache_fsm_busy | mem_write_enable;

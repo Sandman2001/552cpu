@@ -153,8 +153,6 @@ module cpu_ptb();
    assign MemRead =  (DUT.data_memory.enable & ~DUT.data_memory.wr);
    // Is memory being read from, in this cycle. one bit signal (1 means yes, 0 means no)
    
-   assign MemRead =  (DUT.data_memory.enable & DUT.data_memory.wr);
-   // Is memory being written to, in this cycle (1 bit signal)
    
    assign MemAddress = DUT.data_memory.addr;
    // If there's a memory access this cycle, this should hold the address to access memory with (for both reads and writes to memory, 16 bits)
