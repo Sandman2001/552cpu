@@ -110,21 +110,37 @@ module cpu (
 
     // --- Cache Controller ---
     // Handles I-Cache and D-Cache access, memory interaction, and stalling
+
+    module CacheController(
+    input  wire         clk,
+    input  wire         rst,
+    input  wire         memRead,
+    input  wire         memWrite,
+    input  wire [15:0]  ins_addr,
+    input  wire [15:0]  mem_addr,
+    input  wire [15:0]  memDataIn,
+    input  wire [15:0]  instDataIn,
+    output wire [15:0]  memDataOut,
+    output wire [15:0]  instDataOut,
+    output wire         IFStall,   // Stall signal for IF stage
+    output wire         MEMStall  // Stall signal for MEM stage (and upstream)
+);
+
     cache_controller cache_ctrl (
         .clk(clk),
         .rst(rst), // Controller uses active high reset
 
         // D-Cache Interface (from/to MEM stage - uses EX/MEM outputs)
-        .dcache_memRead(exmem_MemRead),     // Read request from EX/MEM reg
-        .dcache_memWrite(exmem_MemWrite),   // Write request from EX/MEM reg
-        .dcache_addr(exmem_ALU_result),   // Address from EX/MEM reg (ALU result)
-        .dcache_dataIn(exmem_SW_data),      // Data to write from EX/MEM reg
-        .dcache_dataOut(dcache_data_out),   // Data read result to MEM/WB reg input
+        .memRead(exmem_MemRead),     // Read request from EX/MEM reg
+        .memWrite(exmem_MemWrite),   // Write request from EX/MEM reg
+        .mem_addr(exmem_ALU_result),   // Address from EX/MEM reg (ALU result)
+        .memDataIn(exmem_SW_data),      // Data to write from EX/MEM reg
+        .memDataOut(dcache_data_out),   // Data read result to MEM/WB reg input
         .dcache_stall(dcache_stall),      // Stall signal back to pipeline control
 
         // I-Cache Interface (from/to FETCH stage)
-        .icache_addr(fetch_PC),           // Address from Fetch stage
-        .icache_dataOut(icache_data_out),   // Instruction data back to Fetch
+        .ins_addr(fetch_PC),           // Address from Fetch stage
+        .instDataOut(icache_data_out),   // Instruction data back to Fetch
         .icache_stall(icache_stall)       // Stall signal back to pipeline control
     );
 
