@@ -111,22 +111,8 @@ module cpu (
     // --- Cache Controller ---
     // Handles I-Cache and D-Cache access, memory interaction, and stalling
 
-    module CacheController(
-    input  wire         clk,
-    input  wire         rst,
-    input  wire         memRead,
-    input  wire         memWrite,
-    input  wire [15:0]  ins_addr,
-    input  wire [15:0]  mem_addr,
-    input  wire [15:0]  memDataIn,
-    input  wire [15:0]  instDataIn,
-    output wire [15:0]  memDataOut,
-    output wire [15:0]  instDataOut,
-    output wire         IFStall,   // Stall signal for IF stage
-    output wire         MEMStall  // Stall signal for MEM stage (and upstream)
-);
 
-    cache_controller cache_ctrl (
+    CacheController cache_ctrl (
         .clk(clk),
         .rst(rst), // Controller uses active high reset
 
