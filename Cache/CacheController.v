@@ -138,8 +138,8 @@ module CacheController(
         .memory_address(data_fsm_addr),
         .memory_data(main_data_out),
         .memory_data_valid(mainMemValid),
-        .wrd_en(data_fsm_word_en),  //not in our module
-        .stall(data_cache_stall), //not in our module
+        .wrd_en(data_fsm_word_en), 
+        .stall(data_cache_stall), 
         .fsm_busy(data_fsm_busy)
     );
 
