@@ -8,8 +8,8 @@ module cache_fill_FSM (
     output reg      write_data_array,
     output reg      write_tag_array,
     output wire [15:0] memory_address,
-	output wire [15:0] cache_address
-    output [7:0] wrd_en;
+    output wire [15:0] cache_address,
+    output [7:0] wrd_en,
     output stall
 );
 wire state, next_state;// State Idle: state = 0 Wait: 1
@@ -39,7 +39,7 @@ dff count_4[3:0](.q(cnt4), .d(nxt_cnt4), .wen(miss_detected & ~(nxt_cnt4 == 4'h4
 adder_4bit inc_mem_adder(.Sum(inc_addr), .A(addr), .B(4'h2), .Cin(1'b0), .Cout());
 assign next_addr = (state) ? inc_addr : 4'h0;
 dff addr_ff[3:0](.q(addr), .d(next_addr), .wen(state), .clk(clk), .rst(~rst_n | (~state & next_state)));
-addsub_16bit out_mem_adder(.Sum(memory_address), .A({{12{1'b0}},addr}), .B({miss_address[15:4],4'h0}), .sub(1'b0), .sat());
+CLA_16bit out_mem_adder( .A({{12{1'b0}},addr}), .B({miss_address[15:4],4'h0}), .Sum(memory_address), .error());
 
 //Inc word enable used in the cache module 
 wordEnable instWordEn(.b_offset(count[2:0]), .wordEn(wrd_en));
